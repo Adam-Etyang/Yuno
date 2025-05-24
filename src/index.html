@@ -10,15 +10,18 @@
   <title>Your Page Title</title>
   <link rel="stylesheet" href="styles.css" />
   <script defer src="script.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 
-<!--DONE-->: <!--TODO: create navigation section-->
+<!--DONE--> <!--TODO: create navigation section-->
 <!--TODO: create hero section-->
 <!--TODO: create description section-->
 
 
 <body>
+
+
 
   <!--Navigation bar
 features: fixed in position at the top
@@ -30,7 +33,7 @@ Calender/schedule
 Sign-up/login
 -->
 
-  <nav class="fixed top-0 left-0 w-full bg-white/20 backdrop-blur-md shadow-md z-50">
+  <nav class="fixed top-0 p-4 w-full bg-white/20 backdrop-blur-md shadow-md z-50">
     <div class="max-w-7xl mx-auto px-4">
       <div class="flex items-center justify-between h-16">
 
@@ -40,7 +43,7 @@ Sign-up/login
         </div>
 
         <!--navigation links in the center-->
-        <div class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-4">
+        <div class="hidden md:flex space-x-8 flex-1 justify-center">
           <a href="#about" class="relative group text-black ">
             About
             <span
@@ -76,30 +79,41 @@ Sign-up/login
         </div>
       </div>
   </nav>
+  <!--Navigation bar end-->
 
-  <header>
+  <!--Hero section-->
+  <section
+    class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
+    <!-- Hero content -->
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+        Lorem ipsum dolor sit amet
+      </h1>
 
-
-
-
-
-  </header>
-
-
-  <main>
-
-
-
-
-
-  </main>
-
-  <footer>
+      <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
 
 
+    </div>
+  </section>
+  <!--Hero section end-->
+
+  <!-- Scroll indicator -->
+
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-[40%] flex flex-col items-center text-center">
+    <!-- Mouse Icon -->
+    <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center items-start">
+      <div class="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse"></div>
+    </div>
+    <!-- Text -->
+    <p class="mt-2 text-sm text-gray-500">Scroll to explore</p>
+  </div>
 
 
-  </footer>
+
 
 
 </body>
