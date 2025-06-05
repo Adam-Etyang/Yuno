@@ -1,143 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="stylesheet" href="output.css">
   <title>Yuno</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="script.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
-
-
-<!--DONE--> <!--TODO: create navigation section-->
-<!--DONE--> <!--TODO: create hero section-->
-<!--DONE--> <!--TODO: create description section-->
-
 
 <body class="scroll-smooth">
 
-
-
-  <!--Navigation bar
-features: fixed in position at the top
-elements:
-Logo
-About
-Events
-Calender/schedule
-Sign-up/login
--->
-
-  <nav class="fixed top-0 p-4 w-full bg-white/20 backdrop-blur-md shadow-md z-50">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-center justify-between h-16">
-
-        <!--Logo on the left-->
-        <div class="flex-shrink-0">
-          <a href="#home" class="text-xl fint-bold  text-black">Logo</a>
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-content">
+        <!-- Logo on the left -->
+        <div class="logo">
+          <a href="#home">Logo</a>
         </div>
 
-        <!--navigation links in the center-->
-        <div class="hidden md:flex space-x-8 flex-1 justify-center">
-          <a href="#about" class="relative group text-black ">
+        <!-- Navigation links in the center -->
+        <div class="nav-links">
+          <a href="#about" class="nav-link">
             About
-            <span
-              class="absolute left-0 -bottom-1 h-0.5 w-0 bg-black  transition-all duration-300 group-hover:w-full"></span>
+            <span class="nav-underline"></span>
           </a>
-          <a href="#events" class="relative group text-black ">
+          <a href="#events" class="nav-link">
             Events
-            <span
-              class="absolute left-0 -bottom-1 h-0.5 w-0 bg-black  transition-all duration-300 group-hover:w-full"></span>
+            <span class="nav-underline"></span>
           </a>
-          <a href="#schedule" class="relative group text-black ">
+          <a href="#schedule" class="nav-link">
             Schedule
-            <span
-              class="absolute left-0 -bottom-1 h-0.5 w-0 bg-black  transition-all duration-300 group-hover:w-full"></span>
+            <span class="nav-underline"></span>
           </a>
-
-
-          <a href="#Explore" class="relative group text-black ">
+          <a href="#Explore" class="nav-link">
             Explore
-            <span
-              class="absolute left-0 -bottom-1 h-0.5 w-0 bg-black  transition-all duration-300 group-hover:w-full"></span>
+            <span class="nav-underline"></span>
           </a>
         </div>
 
-        <!--Auth buttons on the left-->
-        <div class="flex space-x-4">
-          <a href="#login"
-            class="px-4 py-2 bg-white/70  text-black  rounded transition-shadow duration-200 hover:shadow-xl">
-            Login
-          </a>
-          <a href="#signup"
-            class="px-4 py-2 bg-black text-white rounded transition-shadow duration-200 hover:shadow-xl">Sign Up</a>
+        <!-- Auth buttons on the right -->
+        <div class="auth-buttons">
+          <a href="pages/Login.html" class="btn-login">Login</a>
+          <a href="pages/signup.html" class="btn-signup">Sign Up</a>
         </div>
       </div>
+    </div>
   </nav>
-  <!--Navigation bar end-->
 
-
-
-
-
-  <!--Hero section-->
-  <section id="home"
-    class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
-
-    <!--TODO: background images for hero-->
-
-    <!--TODO: Text ideas for Hero-->
-    <!-- Hero content -->
-    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
-      <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-        Lorem ipsum dolor sit amet <!--TODO: Change this later-->
+  <!-- Hero section -->
+  <section id="home" class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Lorem ipsum dolor sit amet
       </h1>
-
-      <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+      <p class="hero-description">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
         magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
         consequat.
       </p>
+    </div>
 
-
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <div class="mouse-icon">
+        <div class="mouse-dot"></div>
+      </div>
+      <p class="scroll-text">Scroll to explore</p>
     </div>
   </section>
-  <!--Hero section end-->
 
-
-
-
-  <!-- Scroll indicator -->
-
-  <div class="absolute bottom-8 left-1/2 transform -translate-x-[40%] flex flex-col items-center text-center">
-    <!-- Mouse Icon -->
-    <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center items-start">
-      <div class="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse"></div>
-    </div>
-    <p class="mt-2 text-sm text-gray-500">Scroll to explore</p>
-  </div>
-
-
-
-
-
-  <!--Call to action-->
-
-  <section id="about"
-    class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden">
-
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-black  mb-4">
-        Lorem ipsum dolor sit amet <span id="typewriter"
-          class="text-black border-r-r-2 animate-pulse">consectetur</span>
-
+  <!-- Call to action -->
+  <section id="about" class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">
+        Lorem ipsum dolor sit amet <span id="typewriter" class="typewriter">consectetur</span>
       </h2>
-      <p class="text-black mb-8">
+      <p class="cta-description">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
         exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
@@ -145,301 +85,174 @@ Sign-up/login
         Excepteur sint occaecat cupidatat non proident,
         sunt in culpa qui officia deserunt mollit anim id est laborum.
       </p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="#signup"
-          class="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-white hover:text-black transition">
-          Sign Up Now
-        </a>
-        <a href="#About"
-          class="px-6 py-3 text-black bg-white rounded-lg font-semibold hover:bg-black hover:text-white transition">
-          Learn More
-        </a>
+      <div class="cta-buttons">
+        <a href="#signup" class="btn-primary">Sign Up Now</a>
+        <a href="#About" class="btn-secondary">Learn More</a>
       </div>
     </div>
   </section>
 
-
-
-
-
-
-  <!--Sample events-->
-  <section id="events" class="bg-white py-16 px-6">
-    <div class="max-w-7xl mx-auto">
-      <h2 class="text-3xl font-bold text-center my-8">Upcoming Events</h2>
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <!--Sample cards-->
-
-        <!--Card 1-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+  <!-- Sample events -->
+  <section id="events" class="events-section">
+    <div class="events-container">
+      <h2 class="events-title">Upcoming Events</h2>
+      <div class="events-grid">
+        <!-- Card 1 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-        <!--Card 2-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 2 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-        <!--Card 3-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 3 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-        <!--Card 4-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 4 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-        <!--card 5-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 5 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-
-
-        <!--card 6-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 6 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-
-
-        <!--card 7-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 7 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-        <!--card 8-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 8 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
 
-
-        <!--card 9-->
-        <a href="">
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-black">
-            <img src="" alt="Event Image" class="w-full h-48 object-cover">
-            <div class="p-6">
-              <h3 class="text-xl font-semibold text-black dark:text-white mb-2">Live Concert</h3>
-              <p class="text-black font-bold">Lorem ipsum deserunt </p>
-              <p class="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. </p>
+        <!-- Card 9 -->
+        <a href="" class="event-card-link">
+          <div class="event-card">
+            <img src="" alt="Event Image" class="event-image">
+            <div class="event-content">
+              <h3 class="event-title">Live Concert</h3>
+              <p class="event-subtitle">Lorem ipsum deserunt</p>
+              <p class="event-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
         </a>
-
-
-        <!--Discover more-->
       </div>
     </div>
 
-    <div class=" flex justify-center mt-8 ">
-      <a href="#more-events"
-        class=" p-4 rounded-lg text-white hover:text-black hover:bg-white transition text-lg bg-black font-medium">
+    <div class="view-more-container">
+      <a href="#more-events" class="btn-view-more">
         View more events →
       </a>
     </div>
-
   </section>
 
-  <!--ticker carrousel bc i like it-->
-  <section class="bg-gray-100 py-6 overflow-hidden">
-    <div class="max-w-7xl mx-auto">
-      <h2 class="text-center text-xl font-semibold text-black mb-4"> Partner Universities</h2>
-      <!--hover wrapper-->
-      <div class="relative overflow-hidden group">
-        <div class="flex space-x-8 w-max" id="ticker">
-          <!--Sample elements-->
-          <!--TODO: change divs to svg logo images-->
-          <div
-            class="w-32 h-16 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            MIT</div>
-          <div
-            class="w-32 h-16 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            CALTECH</div>
-          <div
-            class="w-32 h-16 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            HAVARD</div>
-          <div
-            class="w-32 h-16 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            COLUMBIA</div>
-          <div
-            class="w-32 h-16 bg-gray-300 dark:bg-gray-600 rounded flex items-center justify-center text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            YALE</div>
+  <!-- Ticker carousel -->
 
+  <!--TODO:replace divs with pictures-->
+  <section class="ticker-section">
+    <div class="ticker-container">
+      <h2 class="ticker-title">Partner Universities</h2>
+      <div class="ticker-wrapper">
+        <div class="ticker-content" id="ticker">
+          <div class="ticker-item">MIT</div>
+          <div class="ticker-item">CALTECH</div>
+          <div class="ticker-item">HARVARD</div>
+          <div class="ticker-item">COLUMBIA</div>
+          <div class="ticker-item">YALE</div>
         </div>
-
       </div>
-
     </div>
-
   </section>
 
-  <!--ticker carrousel animation bc why not-->
-  <script>
-    const ticker = document.getElementById("ticker");
-    const tickerParent = ticker.parentElement;
-    let isPaused = false;
-    let speed = 1; //pixels per frame
-
-    const originalContent = ticker.innerHTML; //store original content
-    //duplicate ticker content to make infinite loop
-    ticker.innerHTML = originalContent + originalContent + originalContent;
-
-    let x = 0;
-
-    const oneSetWidth = ticker.scrollWidth / 3;
-
-    function animate() {
-      if (!isPaused) {
-        x -= speed;
-        if (Math.abs(x) >= oneSetWidth) {
-          x = 0;
-        }
-
-        ticker.style.transform = `translateX(${x}px)`;
-      }
-      requestAnimationFrame(animate);
-    }
-
-    //pause on hover
-    ticker.parentElement.addEventListener('mouseenter', () => {isPaused = true;});
-    ticker.parentElement.addEventListener('mouseleave', () => {isPaused = false;});
-
-    animate(); //start the animation
-  </script>
-
-
-  <!--typewriter animation bc i was bored-->
-  <script>
-    const words = ["eiusmod", "adipiscing", "elit"];
-    const typewriter = document.getElementById("typewriter");
-
-    let wordIndex = 0;//treacks which word were on
-    let charIndex = 0;//tracking how many characters are shown
-    let isDeleting = false;//tracking if typing or deleting the letter
-
-    function type() {
-      const currentWord = words[wordIndex];
-      const currentText = currentWord.substring(0, charIndex);
-
-      typewriter.textContent = currentText;
-      if (!isDeleting) {
-        if (charIndex < currentWord.length) {
-          charIndex++;//type out the next letter
-          setTimeout(type, 100);
-        } else {
-          isDeleting = true;
-          setTimeout(type, 2000); //wait before deleting
-        }
-      }
-      else {
-        if (charIndex > 0) {
-          charIndex--;//delete the last letter
-          setTimeout(type, 50);//delete faster than typing
-        } else {
-          isDeleting = false;
-          wordIndex = (wordIndex + 1) % words.length;
-          setTimeout(type, 500); //wait before typing the next word
-        }
-      }
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-      type(); //start the typewriter effect when the DOM is loaded
-    });
-
-  </script>
-  <footer class="bg-gray-200 py-6">
-    <div class="max-w-7xl mx-auto px-4 text-center text-gray-700">
-      <p class="mb-2">© 2025 Comany name. All rights reserved.</p>
-      <p>
+  <footer class="footer">
+    <div class="footer-container">
+      <p class="footer-text">© 2025 Company name. All rights reserved.</p>
+      <p class="footer-links">
         Designed with care.
-        <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a> |
-        <a href="#" class="text-blue-600 hover:underline">Terms of Service</a>
+        <a href="#" class="footer-link">Privacy Policy</a> |
+        <a href="#" class="footer-link">Terms of Service</a>
       </p>
     </div>
   </footer>
 
-
+  <script src = 'js/main.js'></script>
 </body>
 
 </html>
