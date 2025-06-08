@@ -47,7 +47,7 @@ function initializeTypewriter() {
   const typewriter = document.getElementById("typewriter");
   if (!typewriter) return; // Exit if typewriter doesn't exist on current page
   
-  const words = ["eiusmod", "adipiscing", "elit"];
+  const words = ["Intelligent reservations", "seamless planning", "effortless scheduling"];
   let wordIndex = 0; // tracks which word we're on
   let charIndex = 0; // tracking how many characters are shown
   let isDeleting = false; // tracking if typing or deleting the letter
