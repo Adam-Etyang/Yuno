@@ -51,7 +51,9 @@ class ProceduralSignup {
         this.focusCurrentInput();
     }
 
-    
+   // Handles the next button click event
+    // Validates the current step, saves the data, and navigates to the next step or creates the account if on the last step
+
     handleNext() {
         if (this.validateStep(this.currentStep)) {
             this.saveStepData();
@@ -71,6 +73,10 @@ class ProceduralSignup {
             }
         }
     }
+// Handles the previous button click event
+    // Navigates back to the previous step, updates the progress, and focuses the current input field
+    // It also updates the button text if necessary.
+
 
     handlePrevious() {
         if (this.currentStep > 1) {
@@ -95,7 +101,9 @@ class ProceduralSignup {
 
         return validators[step] ? validators[step]() : false;
     }
-
+// Validates the organization name input
+// Checks if the name is at least 2 characters long and contains only valid characters
+    // Displays error messages if validation fails and clears them if validation passes
     validateOrgName() {
         const input = document.getElementById('orgName');
         const error = document.getElementById('orgNameError');
@@ -114,7 +122,9 @@ class ProceduralSignup {
         this.clearError(input, error);
         return true;
     }
-
+// Validates the email input
+// Checks if the email format is valid using a regular expression
+    // Displays error messages if validation fails and clears them if validation passes
     validateEmail() {
         const input = document.getElementById('email');
         const error = document.getElementById('emailError');
@@ -128,7 +138,9 @@ class ProceduralSignup {
         this.clearError(input, error);
         return true;
     }
-
+// Validates the password input
+// Checks if the password is at least 8 characters long and contains at least one uppercase letter, one lowercase letter, and one number
+    // Displays error messages if validation fails and clears them if validation passes
     validatePassword() {
         const input = document.getElementById('password');
         const error = document.getElementById('passwordError');
@@ -147,18 +159,24 @@ class ProceduralSignup {
         this.clearError(input, error);
         return true;
     }
-
-    showError(input, errorElement, message) {
+    
+// Displays an error message for the input field
+// Adds an error class to the input and shows the error message in the specified error element
+    // Clears the error message if validation passes
+showError(input, errorElement, message) {
         input.classList.add('error');
         errorElement.textContent = message;
         errorElement.classList.add('show');
     }
-
+// Clears the error message for the input field
+// Removes the error class from the input and hides the error message in the specified error element
+    // This method is called when the input passes validation
     clearError(input, errorElement) {
         input.classList.remove('error');
         errorElement.classList.remove('show');
     }
-
+// Updates the password strength indicator based on the current password input
+// It calculates the strength based on length, character variety, and displays the strength level with a color-coded bar
     updatePasswordStrength() {
         const password = document.getElementById('password').value;
         const strengthContainer = document.getElementById('passwordStrength');
