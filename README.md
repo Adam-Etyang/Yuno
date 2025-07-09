@@ -5,6 +5,7 @@
 **Yuno** is a **web-based platform** helping **students, teachers, and administrators** manage **events, resources, and tickets** on campus. It serves as a central hub for planning and joining events, booking rooms and equipment, and making online payments.
 
 Built with modern tools:
+
 - **React** (frontend)
 - **Django** (backend)
 - **Firebase** (auth & real-time updates)
@@ -37,4 +38,4 @@ Built with modern tools:
 
 ---
 
-🌿 *Built for campus ease, with you in mind.*
+🌿 _Built for campus ease, with you in mind._

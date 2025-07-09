@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="One Platform. Endless Campus Experiences. Manage all your campus bookings in one seamless platform." />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title>Yuno</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="scroll-smooth">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-content">
+        <!-- Logo on the left -->
+        <div class="logo">
+          <a href="#home">Logo</a>
+        </div>
+
+        <!-- Navigation links in the center -->
+        <div class="nav-links">
+          <a href="#about" class="nav-link">
+            About
+            <span class="nav-underline"></span>
+          </a>
+          <a href="#events" class="nav-link">
+            Events
+            <span class="nav-underline"></span>
+          </a>
+          <a href="#schedule" class="nav-link">
+            Schedule
+            <span class="nav-underline"></span>
+          </a>
+          <a href="#explore" class="nav-link">
+            Explore
+            <span class="nav-underline"></span>
+          </a>
+        </div>
+
+        <!-- Auth buttons on the right - can be replaced with React components later -->
+        <div class="auth-buttons">
+          <a href="pages/Login.html" class="btn-login">Login</a>
+          <a href="pages/signup.html" class="btn-signup">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero section -->
+  <section id="home" class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        One Platform. Endless Campus Experiences.
+      </h1>
+      <p class="hero-description">
+        From reserving auditoriums to grabbing event tickets — manage all your campus bookings in one seamless platform.
+      </p>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <div class="mouse-icon">
+        <div class="mouse-dot"></div>
+      </div>
+      <p class="scroll-text">Scroll to explore</p>
+    </div>
+  </section>
+
+  <!-- Call to action -->
+  <section id="about" class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">
+        Streamline your campus experience with <span id="typewriter" class="typewriter">Smart booking </span>
+      </h2>
+      <p class="cta-description">
+        Transform how your campus manages events and resources with our comprehensive booking system.
+        Whether you're organizing academic conferences, student gatherings, or need to reserve lecture halls and
+        equipment,
+        our platform connects students, faculty, and administrators in one centralized hub.
+        Say goodbye to scheduling conflicts and hello to seamless event planning.
+        From ticket management to resource allocation, we've got your campus covered with intelligent booking solutions
+        that maximize facility utilization and enhance the overall campus experience.
+      </p>
+      <div class="cta-buttons">
+        <a href="#signup" class="btn-primary">Sign Up Now</a>
+        <a href="#about" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events section - React component will be mounted here -->
+  <section id="events" class="events-section">
+    <div class="events-container">
+      <h2 class="events-title">Upcoming Events</h2>
+      <!-- React component will mount here -->
+      <div id="events-grid">
+        <!-- Fallback static content in case React doesn't load -->
+        <div class="loading-placeholder">Loading events...</div>
+      </div>
+    </div>
+
+    <div class="view-more-container">
+      <!-- React component for view more button -->
+      <div id="view-more-button">
+        <a href="#more-events" class="btn-view-more">
+          View more events →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ticker carousel -->
+  <section class="ticker-section">
+    <div class="ticker-container">
+      <h2 class="ticker-title">Partner Universities</h2>
+      <div class="ticker-wrapper">
+        <div class="ticker-content" id="ticker">
+          <img src="images/MIT_logo.svg" alt="MIT" class="ticker-item">
+          <img src="images/Caltech_Logo.png" alt="Caltech" class="ticker-item">
+          <img src="images/Harvard_University_logo.png" alt="Harvard University" class="ticker-item">
+          <img src="images/Columbia_University_Logo.svg.png" alt="Columbia" class="ticker-item">
+          <img src="images/Yale_University_Logo.png" alt="Yale" class="ticker-item">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p class="footer-text">© 2025 Yuno. All rights reserved.</p>
+      <p class="footer-links">
+        Designed with care.
+        <a href="#" class="footer-link">Privacy Policy</a> |
+        <a href="#" class="footer-link">Terms of Service</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Main React app mount point (for future use) -->
+  <div id="root"></div>
+  
+  <!-- Additional mount points for specific React components -->
+  <div id="auth-components" style="display: none;"></div>
+  <div id="search-component" style="display: none;"></div>
+
+  <script src='js/main.js'></script>
+</body>
+
+</html>
