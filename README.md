@@ -1,32 +1,40 @@
-# Yuno
+# 🎟️ Yuno
 
-## overview
-Yuno is a web based platform that helps students, teachers and admnisitrators manage events resources and tickets on a school campus. It acts as a central hub for planning and joining events, booking rooms and equipment and making online payements. Built with mordern tools like  react for the front end and django for the backend and firebase for authentication and real time updates
+## Overview
 
-## Key features and benefits
-### 1. All in one Event manegement
-### 2. Easy ticketing nd payements
-### 3. Automatic notifications
-### 4. Smart scheduling
-### 5. Quick search and filters
-### 6. Useful analytics
-### 7. Safe and scalable system
-### 8. Campus wide discovery
+**Yuno** is a **web-based platform** helping **students, teachers, and administrators** manage **events, resources, and tickets** on campus. It serves as a central hub for planning and joining events, booking rooms and equipment, and making online payments.
 
-## Functional requirements
-### 1. user roles: 
-Students, faculty, and admins have different permissions and profiles.
-### 2. Event listings:
-Events include title, date, time, location, price, and more. Authorized users can create and manage them.
-### 3. Ticket and payments
-Payments via M-Pesa or PayPal. Users get QR code tickets stored in their profiles and emails.
-### 4. Calender and scheduling
-A built-in calendar shows all bookings and events to avoid conflicts.
-### 5. Notification system
-users get timely emails and texts about events and bookings
-### 6. Search and filters
-Search events/resources by date, club, keywords, etc.
-### 7. Analytics
- View attendance, ticket sales, and usage trends to help plan better.
-### 8. Event discovery
-Users are shown events that match their interests, including those outside their group.
+Built with modern tools:
+- **React** (frontend)
+- **Django** (backend)
+- **Firebase** (auth & real-time updates)
+
+---
+
+## ✨ Key Features
+
+1️⃣ All-in-one event management  
+2️⃣ Easy ticketing and payments  
+3️⃣ Automatic notifications  
+4️⃣ Smart scheduling  
+5️⃣ Quick search and filters  
+6️⃣ Useful analytics  
+7️⃣ Safe and scalable system  
+8️⃣ Campus-wide event discovery
+
+---
+
+## 🛠️ Functional Requirements
+
+- **User Roles:** Students, faculty, and admins have different permissions and profiles.
+- **Event Listings:** Title, date, time, location, price, and more. Authorized users can create/manage events.
+- **Tickets & Payments:** M-Pesa & PayPal with QR code tickets in profiles and email.
+- **Calendar & Scheduling:** Built-in calendar to view all bookings and avoid conflicts.
+- **Notifications:** Timely emails and SMS about events and bookings.
+- **Search & Filters:** Find events/resources by date, club, keywords, etc.
+- **Analytics:** Attendance, ticket sales, and usage trends to improve planning.
+- **Event Discovery:** Events suggested based on user interests, including those outside the user’s usual groups.
+
+---
+
+🌿 *Built for campus ease, with you in mind.*
