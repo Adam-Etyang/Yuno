@@ -50,7 +50,7 @@ export const mockEvents = [
     time: '09:00',
     endTime: '17:00',
     location: 'Main Auditorium',
-    price: 25,
+    price: 2500,
     category: 'academic',
     club: 'Computer Science Club',
     maxAttendees: 200,
@@ -69,7 +69,7 @@ export const mockEvents = [
     time: '18:00',
     endTime: '22:00',
     location: 'Student Center',
-    price: 15,
+    price: 1500,
     category: 'social',
     club: 'International Student Association',
     maxAttendees: 300,
@@ -88,7 +88,7 @@ export const mockEvents = [
     time: '14:00',
     endTime: '18:00',
     location: 'Sports Complex',
-    price: 10,
+    price: 1000,
     category: 'sports',
     club: 'Athletic Department',
     maxAttendees: 500,
@@ -126,7 +126,7 @@ export const mockEvents = [
     time: '12:00',
     endTime: '20:00',
     location: 'Art Gallery',
-    price: 8,
+    price: 800,
     category: 'social',
     club: 'Art Society',
     maxAttendees: 150,
@@ -146,7 +146,7 @@ export const mockTickets = [
     userId: 1,
     qrCode: 'QR123456789',
     purchaseDate: '2025-07-25',
-    price: 25,
+    price: 2500,
     status: 'confirmed',
     paymentMethod: 'M-Pesa'
   },
@@ -156,7 +156,7 @@ export const mockTickets = [
     userId: 1,
     qrCode: 'QR987654321',
     purchaseDate: '2025-07-28',
-    price: 10,
+    price: 1000,
     status: 'confirmed',
     paymentMethod: 'PayPal'
   }
@@ -192,20 +192,20 @@ export const mockCalendarEvents = [
 export const mockAnalytics = {
   totalEvents: 5,
   totalTicketsSold: 591,
-  totalRevenue: 8975,
+  totalRevenue: 897500,
   monthlyData: [
-    { month: 'Jan', events: 2, revenue: 1200 },
-    { month: 'Feb', events: 3, revenue: 1800 },
-    { month: 'Mar', events: 4, revenue: 2400 },
-    { month: 'Apr', events: 2, revenue: 1600 },
-    { month: 'May', events: 5, revenue: 3200 },
-    { month: 'Jun', events: 3, revenue: 2100 },
-    { month: 'Jul', events: 4, revenue: 2800 }
+    { month: 'Jan', events: 2, revenue: 120000 },
+    { month: 'Feb', events: 3, revenue: 180000 },
+    { month: 'Mar', events: 4, revenue: 240000 },
+    { month: 'Apr', events: 2, revenue: 160000 },
+    { month: 'May', events: 5, revenue: 320000 },
+    { month: 'Jun', events: 3, revenue: 210000 },
+    { month: 'Jul', events: 4, revenue: 280000 }
   ],
   categoryStats: [
-    { category: 'Academic', count: 2, revenue: 2500 },
-    { category: 'Social', count: 2, revenue: 1800 },
-    { category: 'Sports', count: 1, revenue: 1200 }
+    { category: 'Academic', count: 2, revenue: 250000 },
+    { category: 'Social', count: 2, revenue: 180000 },
+    { category: 'Sports', count: 1, revenue: 120000 }
   ]
 };
 

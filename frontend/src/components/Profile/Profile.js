@@ -1,573 +1,396 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { mockEvents, mockTickets, getUserTickets } from '../../mock/mockData';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Separator } from '../ui/separator';
-import { useToast } from '../../hooks/use-toast';
+import { Badge } from '../ui/badge';
 import { 
   User, 
   Mail, 
   Phone, 
   MapPin, 
-  Calendar, 
-  Settings, 
-  Ticket, 
-  Heart,
-  Edit3,
+  Calendar,
+  Edit,
   Save,
-  QrCode,
-  Trophy,
-  Star
+  X,
+  Camera,
+  Settings,
+  Bell,
+  Shield,
+  LogOut
 } from 'lucide-react';
 
 const Profile = () => {
-  const { user, updateProfile } = useAuth();
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('profile');
+  const { user, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const [profileData, setProfileData] = useState({
+  const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    bio: user?.bio || '',
     location: user?.location || '',
-    interests: user?.interests || [],
-    profilePicture: user?.profilePicture || ''
+    bio: user?.bio || ''
   });
 
-  const userTickets = getUserTickets(user?.id);
-  const registeredEvents = mockEvents.filter(event => 
-    userTickets.some(ticket => ticket.eventId === event.id)
-  );
-
-  const availableInterests = ['academic', 'social', 'sports', 'technology', 'arts', 'music', 'business', 'science'];
-
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleInterestToggle = (interest) => {
-    setProfileData(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
-  };
-
-  const handleSaveProfile = async () => {
-    setIsLoading(true);
-    
+  const handleSave = async () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update the user profile
-      updateProfile(profileData);
-      
       setIsEditing(false);
-      toast({
-        title: "Profile Updated!",
-        description: "Your profile has been successfully updated.",
-      });
+      // Here you would typically update the user data in your backend
+      console.log('Updated profile:', formData);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      location: user?.location || '',
+      bio: user?.bio || ''
+    });
+    setIsEditing(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const getRoleColor = (role) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'faculty':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'student':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'Not specified';
     return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'academic':
-        return 'bg-blue-100 text-blue-800';
-      case 'social':
-        return 'bg-purple-100 text-purple-800';
-      case 'sports':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getInterestColor = (interest) => {
-    const colors = [
-      'bg-red-100 text-red-800',
-      'bg-blue-100 text-blue-800',
-      'bg-green-100 text-green-800',
-      'bg-yellow-100 text-yellow-800',
-      'bg-purple-100 text-purple-800',
-      'bg-pink-100 text-pink-800',
-      'bg-indigo-100 text-indigo-800',
-      'bg-gray-100 text-gray-800'
-    ];
-    return colors[availableInterests.indexOf(interest) % colors.length];
-  };
-
-  const totalSpent = userTickets.reduce((sum, ticket) => sum + ticket.price, 0);
-  const favoriteCategory = userTickets.length > 0 ? 
-    userTickets.reduce((acc, ticket) => {
-      const event = mockEvents.find(e => e.id === ticket.eventId);
-      acc[event?.category] = (acc[event?.category] || 0) + 1;
-      return acc;
-    }, {}) : {};
-  
-  const mostAttendedCategory = Object.keys(favoriteCategory).reduce((a, b) => 
-    favoriteCategory[a] > favoriteCategory[b] ? a : b, 'academic');
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Profile Header */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-              <div className="relative">
-                <Avatar className="w-32 h-32">
-                  <AvatarImage src={profileData.profilePicture} alt={profileData.name} />
-                  <AvatarFallback className="text-2xl">
-                    {profileData.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                {isEditing && (
-                  <Button
-                    size="sm"
-                    className="absolute -bottom-2 -right-2 rounded-full"
-                    onClick={() => {
-                      const newUrl = prompt('Enter profile picture URL:');
-                      if (newUrl) {
-                        setProfileData(prev => ({ ...prev, profilePicture: newUrl }));
-                      }
-                    }}
-                  >
-                    <Edit3 className="w-3 h-3" />
-                  </Button>
-                )}
-              </div>
-              
-              <div className="flex-1 text-center md:text-left">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900">{profileData.name}</h1>
-                    <p className="text-gray-600 capitalize">{user?.role}</p>
-                    <div className="flex items-center gap-2 mt-2 justify-center md:justify-start">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">{profileData.email}</span>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      if (isEditing) {
-                        handleSaveProfile();
-                      } else {
-                        setIsEditing(true);
-                      }
-                    }}
-                    disabled={isLoading}
-                    className={isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}
-                  >
-                    {isLoading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    ) : isEditing ? (
-                      <Save className="w-4 h-4 mr-2" />
-                    ) : (
-                      <Edit3 className="w-4 h-4 mr-2" />
-                    )}
-                    {isLoading ? 'Saving...' : isEditing ? 'Save Changes' : 'Edit Profile'}
-                  </Button>
-                </div>
-                
-                {profileData.bio && (
-                  <p className="text-gray-600 mb-4">{profileData.bio}</p>
-                )}
-                
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 justify-center md:justify-start">
-                  {profileData.phone && (
-                    <div className="flex items-center gap-1">
-                      <Phone className="w-4 h-4" />
-                      {profileData.phone}
-                    </div>
-                  )}
-                  {profileData.location && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      {profileData.location}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    Member since {formatDate(user?.createdAt || '2024-01-01')}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Ticket className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-blue-600">{userTickets.length}</h3>
-              <p className="text-gray-600">Events Attended</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Trophy className="w-6 h-6 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-green-600">${totalSpent}</h3>
-              <p className="text-gray-600">Total Spent</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Heart className="w-6 h-6 text-purple-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-purple-600">{profileData.interests.length}</h3>
-              <p className="text-gray-600">Interests</p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Star className="w-6 h-6 text-orange-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-orange-600 capitalize">{mostAttendedCategory}</h3>
-              <p className="text-gray-600">Favorite Category</p>
-            </CardContent>
-          </Card>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
+          <p className="text-gray-400">Manage your account settings and preferences</p>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="profile">Profile Info</TabsTrigger>
-            <TabsTrigger value="tickets">My Tickets</TabsTrigger>
-            <TabsTrigger value="interests">Interests</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Profile */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Profile Header */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardContent className="bg-gray-800/20 p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-6">
+                    <div className="relative">
+                      <Avatar className="w-24 h-24 border-4 border-green-500/30">
+                        <AvatarImage src={user?.profilePicture} alt={user?.name} />
+                        <AvatarFallback className="bg-gradient-to-r from-green-500 to-blue-500 text-white text-2xl">
+                          {user?.name?.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="absolute -bottom-2 -right-2 w-8 h-8 p-0 bg-gray-800/80 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                      >
+                        <Camera className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white mb-2">{user?.name}</h2>
+                      <p className="text-gray-400 mb-2">{user?.email}</p>
+                      <Badge className={`${getRoleColor(user?.role)} border`}>
+                        {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    {isEditing ? (
+                      <>
+                        <Button
+                          onClick={handleSave}
+                          className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
+                        >
+                          <Save className="w-4 h-4 mr-2" />
+                          Save
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={handleCancel}
+                          className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-red-400 hover:border-red-500 transition-all duration-300"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        onClick={() => setIsEditing(true)}
+                        className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Profile Info Tab */}
-          <TabsContent value="profile" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
+            {/* Personal Information */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white flex items-center">
+                  <User className="w-5 h-5 mr-2 text-green-400" />
                   Personal Information
                 </CardTitle>
+                <CardDescription className="text-gray-400">
+                  Update your personal details and contact information
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="bg-gray-800/20">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    {isEditing ? (
-                      <Input
-                        id="name"
-                        name="name"
-                        value={profileData.name}
-                        onChange={handleInputChange}
-                      />
-                    ) : (
-                      <p className="p-2 bg-gray-50 rounded">{profileData.name}</p>
-                    )}
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-gray-300">Full Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500 disabled:opacity-50"
+                    />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="email">Email Address</Label>
-                    <p className="p-2 bg-gray-50 rounded text-gray-600">{profileData.email} (Cannot be changed)</p>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500 disabled:opacity-50"
+                    />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    {isEditing ? (
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={profileData.phone}
-                        onChange={handleInputChange}
-                        placeholder="Enter phone number"
-                      />
-                    ) : (
-                      <p className="p-2 bg-gray-50 rounded">{profileData.phone || 'Not provided'}</p>
-                    )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-gray-300">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500 disabled:opacity-50"
+                    />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="location">Location</Label>
-                    {isEditing ? (
-                      <Input
-                        id="location"
-                        name="location"
-                        value={profileData.location}
-                        onChange={handleInputChange}
-                        placeholder="Enter your location"
-                      />
-                    ) : (
-                      <p className="p-2 bg-gray-50 rounded">{profileData.location || 'Not provided'}</p>
-                    )}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="location" className="text-gray-300">Location</Label>
+                    <Input
+                      id="location"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500 disabled:opacity-50"
+                    />
                   </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="bio">Bio</Label>
-                  {isEditing ? (
-                    <Textarea
+
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="bio" className="text-gray-300">Bio</Label>
+                    <textarea
                       id="bio"
                       name="bio"
-                      value={profileData.bio}
-                      onChange={handleInputChange}
-                      placeholder="Tell us about yourself..."
+                      value={formData.bio}
+                      onChange={handleChange}
+                      disabled={!isEditing}
                       rows={4}
+                      className="w-full bg-gray-700/50 border border-gray-600 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500 disabled:opacity-50 resize-none"
+                      placeholder="Tell us about yourself..."
                     />
-                  ) : (
-                    <p className="p-2 bg-gray-50 rounded min-h-[100px]">{profileData.bio || 'No bio provided'}</p>
-                  )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Tickets Tab */}
-          <TabsContent value="tickets" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Ticket className="w-5 h-5" />
-                  My Event Tickets
-                </CardTitle>
+            {/* Account Statistics */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Account Statistics</CardTitle>
+                <CardDescription className="text-gray-400">
+                  Your activity and engagement on the platform
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                {userTickets.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {userTickets.map((ticket) => {
-                      const event = mockEvents.find(e => e.id === ticket.eventId);
-                      return (
-                        <Card key={ticket.id} className="border-2 border-dashed border-gray-300 hover:border-blue-300 transition-colors">
-                          <CardContent className="p-4">
-                            <div className="text-center space-y-3">
-                              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                                <QrCode className="w-10 h-10 text-blue-600" />
-                              </div>
-                              <div>
-                                <h4 className="font-medium">{event?.title}</h4>
-                                <p className="text-sm text-gray-600">
-                                  {formatDate(event?.date)} • {event?.time}
-                                </p>
-                                <p className="text-sm text-gray-600">{event?.location}</p>
-                              </div>
-                              <div className="space-y-2">
-                                <Badge className={getCategoryColor(event?.category)}>
-                                  {event?.category}
-                                </Badge>
-                                <div className="text-xs text-gray-500">
-                                  <p>Ticket ID: {ticket.qrCode}</p>
-                                  <p>Paid: ${ticket.price}</p>
-                                  <p>Method: {ticket.paymentMethod}</p>
-                                </div>
-                                <Badge className="bg-green-100 text-green-800">
-                                  {ticket.status}
-                                </Badge>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+              <CardContent className="bg-gray-800/20">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="text-2xl font-bold text-white mb-1">12</div>
+                    <div className="text-gray-400 text-sm">Events Attended</div>
                   </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <Ticket className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets yet</h3>
-                    <p className="text-gray-600">Register for events to see your tickets here</p>
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="text-2xl font-bold text-white mb-1">5</div>
+                    <div className="text-gray-400 text-sm">Events Created</div>
                   </div>
-                )}
+                  <div className="text-center p-4 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="text-2xl font-bold text-white mb-1">8</div>
+                    <div className="text-gray-400 text-sm">Days Active</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
 
-          {/* Interests Tab */}
-          <TabsContent value="interests" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5" />
-                  My Interests
-                </CardTitle>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Account Details */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Account Details</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <Label className="text-base font-medium">Current Interests</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {profileData.interests.length > 0 ? (
-                      profileData.interests.map((interest) => (
-                        <Badge key={interest} className={getInterestColor(interest)}>
-                          {interest}
-                          {isEditing && (
-                            <button
-                              onClick={() => handleInterestToggle(interest)}
-                              className="ml-2 hover:bg-black/10 rounded-full p-0.5"
-                            >
-                              ×
-                            </button>
-                          )}
-                        </Badge>
-                      ))
-                    ) : (
-                      <p className="text-gray-500">No interests selected</p>
-                    )}
-                  </div>
-                </div>
-
-                {isEditing && (
-                  <div>
-                    <Label className="text-base font-medium">Add Interests</Label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {availableInterests.filter(interest => !profileData.interests.includes(interest)).map((interest) => (
-                        <Button
-                          key={interest}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleInterestToggle(interest)}
-                          className="capitalize"
-                        >
-                          + {interest}
-                        </Button>
-                      ))}
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                      <User className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">User ID</p>
+                      <p className="text-white font-medium">{user?.id}</p>
                     </div>
                   </div>
-                )}
 
-                <Separator />
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-500/30">
+                      <Calendar className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Member Since</p>
+                      <p className="text-white font-medium">{formatDate(user?.createdAt)}</p>
+                    </div>
+                  </div>
 
-                <div>
-                  <h4 className="font-medium mb-3">Recommended Events Based on Your Interests</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {mockEvents
-                      .filter(event => profileData.interests.includes(event.category))
-                      .slice(0, 4)
-                      .map((event) => (
-                        <div key={event.id} className="p-3 border rounded-lg hover:bg-gray-50">
-                          <div className="flex gap-3">
-                            <img
-                              src={event.image}
-                              alt={event.title}
-                              className="w-16 h-16 object-cover rounded"
-                            />
-                            <div className="flex-1">
-                              <h5 className="font-medium text-sm">{event.title}</h5>
-                              <p className="text-xs text-gray-600">{formatDate(event.date)}</p>
-                              <Badge size="sm" className={getCategoryColor(event.category)}>
-                                {event.category}
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center border border-purple-500/30">
+                      <Mail className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Email Verified</p>
+                      <p className="text-green-400 font-medium">✓ Verified</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Account Settings
-                </CardTitle>
+            {/* Quick Actions */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <h4 className="font-medium mb-2">Account Information</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                    <p><span className="font-medium">Account Type:</span> {user?.role}</p>
-                    <p><span className="font-medium">Member Since:</span> {formatDate(user?.createdAt || '2024-01-01')}</p>
-                    <p><span className="font-medium">Total Events:</span> {userTickets.length}</p>
-                  </div>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Settings className="w-4 h-4 mr-2" />
+                    Account Settings
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Bell className="w-4 h-4 mr-2" />
+                    Notification Preferences
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Privacy & Security
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    className="w-full justify-start border-red-600 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all duration-300"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
                 </div>
+              </CardContent>
+            </Card>
 
-                <Separator />
-
-                <div>
-                  <h4 className="font-medium mb-2">Notification Preferences</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-gray-600">Receive updates about events and tickets</p>
-                      </div>
-                      <input type="checkbox" defaultChecked className="rounded" />
+            {/* Recent Activity */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                      <span className="text-green-400 text-xs">✓</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Event Reminders</p>
-                        <p className="text-sm text-gray-600">Get reminders before your registered events</p>
-                      </div>
-                      <input type="checkbox" defaultChecked className="rounded" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">New Event Alerts</p>
-                        <p className="text-sm text-gray-600">Be notified about new events matching your interests</p>
-                      </div>
-                      <input type="checkbox" defaultChecked className="rounded" />
+                    <div>
+                      <p className="text-white text-xs">Registered for "Career Fair"</p>
+                      <p className="text-gray-400 text-xs">2 hours ago</p>
                     </div>
                   </div>
-                </div>
-
-                <Separator />
-
-                <div>
-                  <h4 className="font-medium mb-2 text-red-600">Danger Zone</h4>
-                  <div className="border border-red-200 rounded-lg p-4">
-                    <p className="text-sm text-gray-600 mb-3">
-                      Once you delete your account, there is no going back. Please be certain.
-                    </p>
-                    <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50">
-                      Delete Account
-                    </Button>
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-500/30">
+                      <span className="text-blue-400 text-xs">📅</span>
+                    </div>
+                    <div>
+                      <p className="text-white text-xs">Updated profile information</p>
+                      <p className="text-gray-400 text-xs">1 day ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center border border-purple-500/30">
+                      <span className="text-purple-400 text-xs">🎉</span>
+                    </div>
+                    <div>
+                      <p className="text-white text-xs">Attended "Spring Festival"</p>
+                      <p className="text-gray-400 text-xs">3 days ago</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );

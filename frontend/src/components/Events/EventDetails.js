@@ -1,47 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { mockEvents, mockUsers, mockTickets } from '../../mock/mockData';
+import { mockEvents } from '../../mock/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Separator } from '../ui/separator';
-import { useToast } from '../../hooks/use-toast';
 import { 
   Calendar, 
   MapPin, 
-  Users, 
   Clock, 
-  Tag, 
-  ArrowLeft, 
-  Share2, 
-  Heart, 
-  CreditCard,
-  QrCode,
-  CheckCircle
+  Users, 
+  DollarSign,
+  Share2,
+  Bookmark,
+  Edit,
+  Trash2,
+  ArrowLeft,
+  ExternalLink,
+  Mail,
+  Phone,
+  Globe
 } from 'lucide-react';
 
 const EventDetails = () => {
   const { id } = useParams();
-  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
   const [event, setEvent] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const foundEvent = mockEvents.find(e => e.id === id);
-    setEvent(foundEvent);
-    
-    if (user && foundEvent) {
-      const userTickets = mockTickets.filter(ticket => ticket.userId === user.id);
-      const hasTicket = userTickets.some(ticket => ticket.eventId === foundEvent.id);
-      setIsRegistered(hasTicket);
+    // Simulate API call
+    const fetchEvent = async () => {
+      setIsLoading(true);
+      try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const foundEvent = mockEvents.find(e => e.id === parseInt(id));
+        setEvent(foundEvent);
+        
+        // Check if user is registered (simulate)
+        if (isAuthenticated && foundEvent) {
+          setIsRegistered(foundEvent.attendees?.includes(user?.id) || false);
+        }
+      } catch (error) {
+        console.error('Error fetching event:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [id, user, isAuthenticated]);
+
+  const handleRegister = async () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
     }
-  }, [id, user]);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsRegistered(!isRegistered);
+      // Update event attendees count
+      setEvent(prev => ({
+        ...prev,
+        currentAttendees: isRegistered 
+          ? prev.currentAttendees - 1 
+          : prev.currentAttendees + 1
+      }));
+    } catch (error) {
+      console.error('Error registering for event:', error);
+    }
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: event.title,
+        text: event.description,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      // You could show a toast notification here
+    }
+  };
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'academic':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'social':
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      case 'sports':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -52,351 +113,358 @@ const EventDetails = () => {
     });
   };
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'academic':
-        return 'bg-blue-100 text-blue-800';
-      case 'social':
-        return 'bg-purple-100 text-purple-800';
-      case 'sports':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const handleRegister = async () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-
-    if (event.price > 0) {
-      setShowPaymentModal(true);
-      return;
-    }
-
-    // Handle free event registration
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsRegistered(true);
-      setIsLoading(false);
-      toast({
-        title: "Registration Successful!",
-        description: `You've successfully registered for ${event.title}. Check your profile for your ticket.`,
-      });
-    }, 1500);
-  };
-
-  const handlePayment = (paymentMethod) => {
-    setIsLoading(true);
-    setShowPaymentModal(false);
-    
-    setTimeout(() => {
-      setIsRegistered(true);
-      setIsLoading(false);
-      toast({
-        title: "Payment Successful!",
-        description: `Payment processed via ${paymentMethod}. You're registered for ${event.title}!`,
-      });
-    }, 2000);
-  };
-
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link Copied!",
-      description: "Event link has been copied to your clipboard.",
+  const formatTime = (timeString) => {
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
     });
   };
 
-  if (!event) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading event details...</p>
+          <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
+            <div className="w-8 h-8 border-2 border-gray-600 border-t-green-500 rounded-full animate-spin"></div>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Loading Event</h2>
+          <p className="text-gray-400">Please wait while we load the event details...</p>
         </div>
       </div>
     );
   }
 
-  const organizer = mockUsers.find(u => u.id === event.createdBy);
-  const attendancePercentage = (event.currentAttendees / event.maxAttendees) * 100;
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
+            <span className="text-gray-400 text-2xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-2">Event Not Found</h2>
+          <p className="text-gray-400 mb-4">The event you're looking for doesn't exist or has been removed.</p>
+          <Button
+            onClick={() => navigate('/events')}
+            className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Events
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back Button */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate('/events')}
-          className="mb-6 flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Events
-        </Button>
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/events')}
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Events
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             {/* Event Image */}
-            <div className="relative h-96 rounded-lg overflow-hidden mb-6">
+            <div className="relative rounded-lg overflow-hidden">
               <img
                 src={event.image}
                 alt={event.title}
-                className="w-full h-full object-cover"
+                className="w-full h-64 md:h-80 object-cover"
               />
               <div className="absolute top-4 left-4">
-                <Badge className={getCategoryColor(event.category)}>
+                <Badge className={`${getCategoryColor(event.category)} border`}>
                   {event.category}
                 </Badge>
               </div>
-              <div className="absolute top-4 right-4 flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  onClick={handleShare}
-                  className="bg-white/80 hover:bg-white"
-                >
-                  <Share2 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="bg-white/80 hover:bg-white"
-                >
-                  <Heart className="w-4 h-4" />
-                </Button>
+              <div className="absolute top-4 right-4">
+                <div className="flex space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleShare}
+                    className="bg-black/50 backdrop-blur-sm border-gray-600 text-white hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="bg-black/50 backdrop-blur-sm border-gray-600 text-white hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Bookmark className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </div>
 
-            {/* Event Info */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="text-3xl">{event.title}</CardTitle>
-                <p className="text-gray-600 text-lg">{event.description}</p>
+            {/* Event Details */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-2xl font-bold text-white mb-2">{event.title}</CardTitle>
+                    <p className="text-gray-400">{event.description}</p>
+                  </div>
+                  {(user?.role === 'faculty' || user?.role === 'admin') && event.organizer === user?.id && (
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/events/${event.id}/edit`)}
+                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-red-600 text-red-400 hover:bg-red-500/10 hover:border-red-500 transition-all duration-300"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-blue-600" />
-                    <div>
-                      <p className="font-medium">{formatDate(event.date)}</p>
-                      <p className="text-sm text-gray-600">{event.time} - {event.endTime}</p>
+              <CardContent className="bg-gray-800/20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-500/30">
+                        <Calendar className="w-5 h-5 text-green-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Date & Time</p>
+                        <p className="text-white font-medium">{formatDate(event.date)}</p>
+                        <p className="text-gray-300 text-sm">{formatTime(event.time)}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-red-600" />
-                    <div>
-                      <p className="font-medium">{event.location}</p>
-                      <p className="text-sm text-gray-600">Campus Location</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Users className="w-5 h-5 text-green-600" />
-                    <div>
-                      <p className="font-medium">{event.currentAttendees} / {event.maxAttendees}</p>
-                      <p className="text-sm text-gray-600">Attendees</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Tag className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <p className="font-medium">{event.club}</p>
-                      <p className="text-sm text-gray-600">Organized by</p>
-                    </div>
-                  </div>
-                </div>
 
-                <Separator />
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                        <MapPin className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Location</p>
+                        <p className="text-white font-medium">{event.location}</p>
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-green-400 hover:text-green-300"
+                        >
+                          <ExternalLink className="w-3 h-3 mr-1" />
+                          Get Directions
+                        </Button>
+                      </div>
+                    </div>
 
-                {/* Tags */}
-                <div>
-                  <h4 className="font-medium mb-2">Tags</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {event.tags.map((tag, index) => (
-                      <Badge key={index} variant="outline">
-                        {tag}
-                      </Badge>
-                    ))}
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center border border-purple-500/30">
+                        <Users className="w-5 h-5 text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Attendees</p>
+                        <p className="text-white font-medium">
+                          {event.currentAttendees} / {event.maxAttendees}
+                        </p>
+                        <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
+                          <div 
+                            className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(event.currentAttendees / event.maxAttendees) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* Attendance Progress */}
-                <div>
-                  <h4 className="font-medium mb-2">Event Capacity</h4>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${attendancePercentage}%` }}
-                    ></div>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                        <DollarSign className="w-5 h-5 text-yellow-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Price</p>
+                        <p className="text-white font-medium">
+                          {event.price === 0 ? 'Free' : `KES ${event.price}`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center border border-indigo-500/30">
+                        <Globe className="w-5 h-5 text-indigo-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Organized by</p>
+                        <p className="text-white font-medium">{event.club}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center border border-pink-500/30">
+                        <Mail className="w-5 h-5 text-pink-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm">Contact</p>
+                        <p className="text-white font-medium">events@university.edu</p>
+                        <p className="text-gray-300 text-sm">+1 (555) 123-4567</p>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {Math.round(attendancePercentage)}% full
-                  </p>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Organizer Info */}
-            {organizer && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-xl">Event Organizer</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
-                    <Avatar className="w-16 h-16">
-                      <AvatarImage src={organizer.profilePicture} alt={organizer.name} />
-                      <AvatarFallback>{organizer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="font-medium text-lg">{organizer.name}</h4>
-                      <p className="text-gray-600 capitalize">{organizer.role}</p>
-                      <p className="text-sm text-gray-500">{organizer.email}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+            {/* Additional Information */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Additional Information</CardTitle>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-gray-300">
+                    This event promises to be an exciting opportunity for students to connect, learn, and grow together. 
+                    Don't miss out on this amazing experience!
+                  </p>
+                  <h4 className="text-white font-semibold mt-4 mb-2">What to Bring:</h4>
+                  <ul className="text-gray-300 space-y-1">
+                    <li>• Student ID</li>
+                    <li>• Comfortable clothing</li>
+                    <li>• Enthusiasm and positive attitude</li>
+                  </ul>
+                  <h4 className="text-white font-semibold mt-4 mb-2">Important Notes:</h4>
+                  <ul className="text-gray-300 space-y-1">
+                    <li>• Please arrive 15 minutes early</li>
+                    <li>• Food and drinks will be provided</li>
+                    <li>• Photography will be taken during the event</li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Registration Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl text-center">
-                  {event.price === 0 ? 'Free Event' : `$${event.price}`}
-                </CardTitle>
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 sticky top-8">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Register for Event</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {isRegistered ? (
-                  <div className="text-center space-y-4">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                      <CheckCircle className="w-8 h-8 text-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-green-800">You're Registered!</h4>
-                      <p className="text-sm text-green-600">Check your profile for your ticket</p>
-                    </div>
-                    <Button
-                      onClick={() => navigate('/profile')}
-                      className="w-full bg-green-600 hover:bg-green-700"
-                    >
-                      <QrCode className="w-4 h-4 mr-2" />
-                      View My Ticket
-                    </Button>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white mb-1">
+                      {event.price === 0 ? 'Free' : `KES ${event.price}`}
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      {event.currentAttendees} of {event.maxAttendees} spots filled
+                    </p>
                   </div>
-                ) : (
-                  <div className="space-y-4">
-                    <Button
-                      onClick={handleRegister}
-                      disabled={isLoading || event.currentAttendees >= event.maxAttendees}
-                      className="w-full bg-blue-600 hover:bg-blue-700"
-                    >
-                      {isLoading ? (
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      ) : event.price > 0 ? (
-                        <CreditCard className="w-4 h-4 mr-2" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                      )}
-                      {isLoading ? 'Processing...' : 
-                       event.currentAttendees >= event.maxAttendees ? 'Event Full' :
-                       event.price > 0 ? 'Buy Ticket' : 'Register Free'}
-                    </Button>
-                    
-                    {event.currentAttendees >= event.maxAttendees && (
-                      <p className="text-sm text-red-600 text-center">
-                        This event is currently full. Check back later for cancellations.
-                      </p>
-                    )}
+
+                  <Button
+                    onClick={handleRegister}
+                    disabled={event.currentAttendees >= event.maxAttendees && !isRegistered}
+                    className={`w-full ${
+                      isRegistered
+                        ? 'bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-300'
+                        : 'bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isRegistered ? 'Cancel Registration' : 'Register Now'}
+                  </Button>
+
+                  {event.currentAttendees >= event.maxAttendees && !isRegistered && (
+                    <p className="text-red-400 text-sm text-center">
+                      This event is full. Join the waitlist to be notified if spots become available.
+                    </p>
+                  )}
+
+                  <div className="text-center">
+                    <p className="text-gray-400 text-sm">
+                      Registration closes {formatDate(event.date)}
+                    </p>
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
 
-            {/* Event Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Event Stats</CardTitle>
+            {/* Organizer Info */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Organizer</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Category</span>
-                  <Badge className={getCategoryColor(event.category)}>
-                    {event.category}
-                  </Badge>
+              <CardContent className="bg-gray-800/20">
+                <div className="flex items-center space-x-3">
+                  <Avatar className="w-12 h-12 border-2 border-green-500/30">
+                    <AvatarImage src="/path-to-organizer-image.jpg" alt="Organizer" />
+                    <AvatarFallback className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
+                      {event.club.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-white font-medium">{event.club}</p>
+                    <p className="text-gray-400 text-sm">Event Organizer</p>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Duration</span>
-                  <span className="font-medium">
-                    {event.time} - {event.endTime}
-                  </span>
+                <div className="mt-4 space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Contact Organizer
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Globe className="w-4 h-4 mr-2" />
+                    Visit Website
+                  </Button>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Created</span>
-                  <span className="font-medium">
-                    {new Date(event.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Status</span>
-                  <Badge variant="outline" className="text-green-600 border-green-600">
-                    {event.status}
-                  </Badge>
+              </CardContent>
+            </Card>
+
+            {/* Similar Events */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Similar Events</CardTitle>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  {mockEvents
+                    .filter(e => e.category === event.category && e.id !== event.id)
+                    .slice(0, 3)
+                    .map((similarEvent) => (
+                      <div
+                        key={similarEvent.id}
+                        className="p-3 bg-gray-700/30 rounded-lg border border-gray-600 hover:border-green-500/30 cursor-pointer transition-all duration-300"
+                        onClick={() => navigate(`/events/${similarEvent.id}`)}
+                      >
+                        <h4 className="font-medium text-white text-sm mb-1">{similarEvent.title}</h4>
+                        <p className="text-gray-400 text-xs">{formatDate(similarEvent.date)}</p>
+                        <Badge className={`${getCategoryColor(similarEvent.category)} border text-xs mt-1`}>
+                          {similarEvent.category}
+                        </Badge>
+                      </div>
+                    ))}
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Payment Modal */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md mx-4">
-            <CardHeader>
-              <CardTitle>Complete Payment</CardTitle>
-              <p className="text-gray-600">Select your payment method</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <p className="text-2xl font-bold text-blue-600">${event.price}</p>
-                <p className="text-sm text-gray-600">for {event.title}</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Button
-                  onClick={() => handlePayment('M-Pesa')}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  disabled={isLoading}
-                >
-                  Pay with M-Pesa
-                </Button>
-                <Button
-                  onClick={() => handlePayment('PayPal')}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  disabled={isLoading}
-                >
-                  Pay with PayPal
-                </Button>
-              </div>
-              
-              <Button
-                variant="outline"
-                onClick={() => setShowPaymentModal(false)}
-                className="w-full"
-              >
-                Cancel
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };

@@ -74,13 +74,13 @@ const Calendar = () => {
   const getBadgeColor = (category) => {
     switch (category) {
       case 'academic':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'social':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       case 'sports':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
@@ -106,22 +106,22 @@ const Calendar = () => {
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Event Calendar</h1>
-          <p className="text-gray-600">View all campus events in calendar format</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Event Calendar</h1>
+          <p className="text-gray-400">View all campus events in calendar format</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar */}
           <div className="lg:col-span-3">
-            <Card>
-              <CardHeader>
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <CalendarIcon className="w-5 h-5" />
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <CalendarIcon className="w-5 h-5 text-green-400" />
                     {monthNames[month]} {year}
                   </CardTitle>
                   <div className="flex items-center gap-2">
@@ -129,6 +129,7 @@ const Calendar = () => {
                       variant="outline"
                       size="icon"
                       onClick={() => navigateMonth(-1)}
+                      className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -136,17 +137,18 @@ const Calendar = () => {
                       variant="outline"
                       size="icon"
                       onClick={() => navigateMonth(1)}
+                      className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-gray-800/20">
                 {/* Calendar Grid */}
                 <div className="grid grid-cols-7 gap-1 mb-2">
                   {daysOfWeek.map(day => (
-                    <div key={day} className="p-2 text-center font-medium text-gray-600 text-sm">
+                    <div key={day} className="p-2 text-center font-medium text-gray-400 text-sm">
                       {day}
                     </div>
                   ))}
@@ -166,18 +168,18 @@ const Calendar = () => {
                     return (
                       <div
                         key={day}
-                        className={`h-24 p-1 border rounded-lg cursor-pointer transition-colors ${
-                          isSelected ? 'bg-blue-50 border-blue-300' : 
-                          isToday ? 'bg-yellow-50 border-yellow-300' : 
-                          'bg-white border-gray-200 hover:bg-gray-50'
+                        className={`h-24 p-1 border rounded-lg cursor-pointer transition-all duration-300 ${
+                          isSelected ? 'bg-green-500/20 border-green-500/50 shadow-lg shadow-green-500/20' : 
+                          isToday ? 'bg-yellow-500/20 border-yellow-500/50 shadow-lg shadow-yellow-500/20' : 
+                          'bg-gray-700/30 border-gray-600 hover:bg-gray-700/50 hover:border-green-500/30'
                         }`}
                         onClick={() => setSelectedDate(date)}
                       >
                         <div className="h-full flex flex-col">
                           <div className={`text-sm font-medium ${
-                            isToday ? 'text-yellow-700' : 
-                            isSelected ? 'text-blue-700' : 
-                            'text-gray-900'
+                            isToday ? 'text-yellow-400' : 
+                            isSelected ? 'text-green-400' : 
+                            'text-white'
                           }`}>
                             {day}
                           </div>
@@ -185,7 +187,7 @@ const Calendar = () => {
                             {dayEvents.slice(0, 2).map((event, eventIndex) => (
                               <div
                                 key={eventIndex}
-                                className={`text-xs p-1 rounded mb-1 cursor-pointer ${getCategoryColor(event.category)} text-white`}
+                                className={`text-xs p-1 rounded mb-1 cursor-pointer ${getCategoryColor(event.category)} text-white shadow-sm hover:shadow-md transition-all duration-200`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   navigate(`/events/${event.id}`);
@@ -195,7 +197,7 @@ const Calendar = () => {
                               </div>
                             ))}
                             {dayEvents.length > 2 && (
-                              <div className="text-xs text-gray-500">
+                              <div className="text-xs text-gray-400">
                                 +{dayEvents.length - 2} more
                               </div>
                             )}
@@ -211,130 +213,92 @@ const Calendar = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Legend */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="w-5 h-5" />
-                  Categories
-                </CardTitle>
+            {/* Month Summary */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Month Summary</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                  <span className="text-sm">Academic</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-purple-500 rounded"></div>
-                  <span className="text-sm">Social</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span className="text-sm">Sports</span>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Total Events</span>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                      {monthEvents.length}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Academic</span>
+                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                      {monthEvents.filter(e => e.category === 'academic').length}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Social</span>
+                    <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                      {monthEvents.filter(e => e.category === 'social').length}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-300">Sports</span>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                      {monthEvents.filter(e => e.category === 'sports').length}
+                    </Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Selected Date Events */}
             {selectedDate && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
+              <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+                <CardHeader className="bg-gray-800/30">
+                  <CardTitle className="text-white">
                     {selectedDate.toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
                       month: 'long', 
-                      day: 'numeric', 
-                      year: 'numeric' 
+                      day: 'numeric' 
                     })}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="bg-gray-800/20">
                   {selectedDateEvents.length > 0 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {selectedDateEvents.map((event) => (
                         <div
                           key={event.id}
-                          className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                          className="p-3 bg-gray-700/30 rounded-lg border border-gray-600 hover:border-green-500/30 cursor-pointer transition-all duration-300"
                           onClick={() => navigate(`/events/${event.id}`)}
                         >
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-sm">{event.title}</h4>
-                            <Badge className={getBadgeColor(event.category)}>
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-medium text-white text-sm">{event.title}</h4>
+                            <Badge className={`${getBadgeColor(event.category)} border text-xs`}>
                               {event.category}
                             </Badge>
                           </div>
-                          <div className="space-y-1 text-xs text-gray-600">
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {event.time} - {event.endTime}
+                          <div className="space-y-1 text-xs text-gray-400">
+                            <div className="flex items-center">
+                              <Clock className="w-3 h-3 mr-1 text-green-400" />
+                              {event.time}
                             </div>
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
+                            <div className="flex items-center">
+                              <MapPin className="w-3 h-3 mr-1 text-green-400" />
                               {event.location}
                             </div>
-                            <div className="flex items-center gap-1">
-                              <Users className="w-3 h-3" />
-                              {event.currentAttendees} attendees
+                            <div className="flex items-center">
+                              <Users className="w-3 h-3 mr-1 text-green-400" />
+                              {event.currentAttendees}/{event.maxAttendees}
                             </div>
-                          </div>
-                          <div className="mt-2 flex items-center justify-between">
-                            <span className="text-sm font-bold text-blue-600">
-                              {event.price === 0 ? 'Free' : `$${event.price}`}
-                            </span>
-                            <Button size="sm" variant="outline">
-                              View Details
-                            </Button>
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <CalendarIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600 text-sm">No events on this date</p>
-                    </div>
+                    <p className="text-gray-400 text-sm">No events scheduled for this date.</p>
                   )}
                 </CardContent>
               </Card>
             )}
-
-            {/* Upcoming Events */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming Events</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {monthEvents.slice(0, 5).map((event) => (
-                    <div
-                      key={event.id}
-                      className="p-2 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                      onClick={() => navigate(`/events/${event.id}`)}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-medium text-sm">{event.title}</h4>
-                        <Badge size="sm" className={getBadgeColor(event.category)}>
-                          {event.category}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-gray-600">
-                        {new Date(event.date).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric' 
-                        })} • {event.time}
-                      </p>
-                    </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => navigate('/events')}
-                  >
-                    View All Events
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>

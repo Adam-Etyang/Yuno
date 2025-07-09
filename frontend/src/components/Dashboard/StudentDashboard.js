@@ -1,37 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { mockEvents, mockTickets, getUserTickets } from '../../mock/mockData';
+import { mockEvents } from '../../mock/mockData';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { 
   Calendar, 
   MapPin, 
-  Users, 
-  Ticket, 
   Clock, 
-  QrCode, 
-  Heart,
-  TrendingUp,
-  Gift
+  Users, 
+  TrendingUp, 
+  Bookmark,
+  Plus,
+  Search,
+  Filter
 } from 'lucide-react';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const userTickets = getUserTickets(user.id);
-  const upcomingEvents = mockEvents.filter(event => 
-    new Date(event.date) > new Date()
-  ).slice(0, 3);
+  // Filter events based on search and category
+  const filteredEvents = mockEvents.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         event.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
-  const registeredEvents = mockEvents.filter(event => 
-    userTickets.some(ticket => ticket.eventId === event.id)
-  );
+  const myEvents = mockEvents.filter(event => event.attendees?.includes(user?.id));
+  const upcomingEvents = mockEvents.filter(event => new Date(event.date) > new Date()).slice(0, 5);
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'academic':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'social':
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      case 'sports':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -41,342 +55,254 @@ const StudentDashboard = () => {
     });
   };
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case 'academic':
-        return 'bg-blue-100 text-blue-800';
-      case 'social':
-        return 'bg-purple-100 text-purple-800';
-      case 'sports':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getInterestRecommendations = () => {
-    if (!user.interests || user.interests.length === 0) return mockEvents.slice(0, 3);
-    
-    return mockEvents.filter(event => 
-      user.interests.includes(event.category)
-    ).slice(0, 3);
-  };
-
-  const recommendedEvents = getInterestRecommendations();
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Avatar className="w-16 h-16">
-              <AvatarImage src={user.profilePicture} alt={user.name} />
-              <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user.name}!</h1>
-              <p className="text-gray-600">Here's what's happening in your campus community</p>
-            </div>
-          </div>
+          <h1 className="text-3xl font-bold text-white mb-2">Student Dashboard</h1>
+          <p className="text-gray-400">Welcome back, {user?.name}! Here's what's happening on campus.</p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-green-500/50 hover:shadow-green-500/20 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">My Tickets</p>
-                  <p className="text-2xl font-bold text-blue-600">{userTickets.length}</p>
+                  <p className="text-gray-400 text-sm">My Events</p>
+                  <p className="text-2xl font-bold text-white">{myEvents.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Ticket className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center border border-green-500/30">
+                  <Bookmark className="w-6 h-6 text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-green-500/50 hover:shadow-green-500/20 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Upcoming Events</p>
-                  <p className="text-2xl font-bold text-green-600">{upcomingEvents.length}</p>
+                  <p className="text-gray-400 text-sm">Upcoming</p>
+                  <p className="text-2xl font-bold text-white">{upcomingEvents.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center border border-blue-500/30">
+                  <Calendar className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-green-500/50 hover:shadow-green-500/20 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Interests</p>
-                  <p className="text-2xl font-bold text-purple-600">{user.interests?.length || 0}</p>
+                  <p className="text-gray-400 text-sm">Total Events</p>
+                  <p className="text-2xl font-bold text-white">{mockEvents.length}</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Heart className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center border border-purple-500/30">
+                  <TrendingUp className="w-6 h-6 text-purple-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-green-500/50 hover:shadow-green-500/20 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    ${userTickets.reduce((sum, ticket) => sum + ticket.price, 0)}
-                  </p>
+                  <p className="text-gray-400 text-sm">Notifications</p>
+                  <p className="text-2xl font-bold text-white">3</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
+                <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center border border-yellow-500/30">
+                  <span className="text-yellow-400 text-xl">🔔</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="tickets">My Tickets</TabsTrigger>
-            <TabsTrigger value="recommended">Recommended</TabsTrigger>
-            <TabsTrigger value="interests">Interests</TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Upcoming Events */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
-                    Upcoming Events
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {upcomingEvents.map((event) => (
-                    <div key={event.id} className="flex items-center gap-4 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/events/${event.id}`)}>
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="w-16 h-16 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">{event.title}</h4>
-                        <p className="text-xs text-gray-600">{formatDate(event.date)} • {event.location}</p>
-                        <Badge size="sm" className={getCategoryColor(event.category)}>
-                          {event.category}
-                        </Badge>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-blue-600">
-                          {event.price === 0 ? 'Free' : `$${event.price}`}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* My Events */}
+          <div className="lg:col-span-2">
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white">My Events</CardTitle>
                   <Button
-                    variant="outline"
-                    className="w-full"
                     onClick={() => navigate('/events')}
+                    className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
                   >
-                    View All Events
+                    Browse All Events
                   </Button>
-                </CardContent>
-              </Card>
-
-              {/* My Registered Events */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Ticket className="w-5 h-5" />
-                    My Registered Events
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {registeredEvents.length > 0 ? (
-                    registeredEvents.map((event) => (
-                      <div key={event.id} className="flex items-center gap-4 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/events/${event.id}`)}>
-                        <img
-                          src={event.image}
-                          alt={event.title}
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-sm">{event.title}</h4>
-                          <p className="text-xs text-gray-600">{formatDate(event.date)} • {event.location}</p>
-                          <Badge size="sm" className="bg-green-100 text-green-800">
-                            Registered
+                </div>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                {myEvents.length > 0 ? (
+                  <div className="space-y-4">
+                    {myEvents.slice(0, 3).map((event) => (
+                      <div
+                        key={event.id}
+                        className="p-4 bg-gray-700/30 rounded-lg border border-gray-600 hover:border-green-500/30 cursor-pointer transition-all duration-300"
+                        onClick={() => navigate(`/events/${event.id}`)}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-semibold text-white">{event.title}</h3>
+                          <Badge className={`${getCategoryColor(event.category)} border`}>
+                            {event.category}
                           </Badge>
                         </div>
-                        <Button size="sm" variant="outline">
-                          <QrCode className="w-4 h-4" />
-                        </Button>
+                        <p className="text-gray-400 text-sm mb-3 line-clamp-2">{event.description}</p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-300">
+                          <div className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-1 text-green-400" />
+                            {formatDate(event.date)}
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1 text-green-400" />
+                            {event.time}
+                          </div>
+                          <div className="flex items-center">
+                            <MapPin className="w-4 h-4 mr-1 text-green-400" />
+                            {event.location}
+                          </div>
+                        </div>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8">
-                      <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">No registered events yet</p>
-                      <Button
-                        variant="outline"
-                        className="mt-4"
-                        onClick={() => navigate('/events')}
-                      >
-                        Browse Events
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Tickets Tab */}
-          <TabsContent value="tickets" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Tickets</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {userTickets.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {userTickets.map((ticket) => {
-                      const event = mockEvents.find(e => e.id === ticket.eventId);
-                      return (
-                        <Card key={ticket.id} className="border-2 border-dashed border-gray-300">
-                          <CardContent className="p-4">
-                            <div className="text-center space-y-2">
-                              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                                <QrCode className="w-8 h-8 text-blue-600" />
-                              </div>
-                              <h4 className="font-medium">{event?.title}</h4>
-                              <p className="text-sm text-gray-600">
-                                {formatDate(event?.date)} • {event?.time}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Ticket ID: {ticket.qrCode}
-                              </p>
-                              <Badge className="bg-green-100 text-green-800">
-                                {ticket.status}
-                              </Badge>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+                    ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <Ticket className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets yet</h3>
-                    <p className="text-gray-600 mb-4">
-                      Register for events to see your tickets here
-                    </p>
-                    <Button onClick={() => navigate('/events')}>
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
+                      <Calendar className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-white mb-2">No events yet</h3>
+                    <p className="text-gray-400 mb-4">Start exploring campus events to get involved!</p>
+                    <Button
+                      onClick={() => navigate('/events')}
+                      className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
+                    >
                       Browse Events
                     </Button>
                   </div>
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
+          </div>
 
-          {/* Recommended Tab */}
-          <TabsContent value="recommended" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Gift className="w-5 h-5" />
-                  Recommended for You
-                </CardTitle>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {recommendedEvents.map((event) => (
-                    <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                      <div className="relative h-32">
-                        <img
-                          src={event.image}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 left-2">
-                          <Badge className={getCategoryColor(event.category)}>
-                            {event.category}
-                          </Badge>
-                        </div>
-                      </div>
-                      <CardContent className="p-4">
-                        <h4 className="font-medium mb-2">{event.title}</h4>
-                        <div className="space-y-1 text-sm text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {formatDate(event.date)}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            {event.location}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {event.currentAttendees} attending
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between mt-4">
-                          <span className="font-bold text-blue-600">
-                            {event.price === 0 ? 'Free' : `$${event.price}`}
-                          </span>
-                          <Button
-                            size="sm"
-                            onClick={() => navigate(`/events/${event.id}`)}
-                          >
-                            View Details
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Interests Tab */}
-          <TabsContent value="interests" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Interests</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex flex-wrap gap-2">
-                    {user.interests?.map((interest) => (
-                      <Badge key={interest} variant="outline" className="px-3 py-1">
-                        {interest}
-                      </Badge>
-                    ))}
-                  </div>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
                   <Button
-                    variant="outline"
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate('/events')}
+                    className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
                   >
-                    Edit Interests
+                    <Search className="w-4 h-4 mr-2" />
+                    Browse Events
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/calendar')}
+                    variant="outline"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    View Calendar
+                  </Button>
+                  <Button
+                    onClick={() => navigate('/profile')}
+                    variant="outline"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    My Profile
                   </Button>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+
+            {/* Upcoming Events */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Upcoming Events</CardTitle>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  {upcomingEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      className="p-3 bg-gray-700/30 rounded-lg border border-gray-600 hover:border-green-500/30 cursor-pointer transition-all duration-300"
+                      onClick={() => navigate(`/events/${event.id}`)}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-medium text-white text-sm">{event.title}</h4>
+                        <Badge className={`${getCategoryColor(event.category)} border text-xs`}>
+                          {event.category}
+                        </Badge>
+                      </div>
+                      <div className="space-y-1 text-xs text-gray-400">
+                        <div className="flex items-center">
+                          <Calendar className="w-3 h-3 mr-1 text-green-400" />
+                          {formatDate(event.date)}
+                        </div>
+                        <div className="flex items-center">
+                          <Clock className="w-3 h-3 mr-1 text-green-400" />
+                          {event.time}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {upcomingEvents.length === 0 && (
+                    <p className="text-gray-400 text-sm text-center py-4">No upcoming events</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card className="bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-white">Recent Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="bg-gray-800/20">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30">
+                      <span className="text-green-400 text-xs">✓</span>
+                    </div>
+                    <div>
+                      <p className="text-white text-xs">Registered for Career Fair</p>
+                      <p className="text-gray-400 text-xs">2 hours ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center border border-blue-500/30">
+                      <span className="text-blue-400 text-xs">📅</span>
+                    </div>
+                    <div>
+                      <p className="text-white text-xs">New event: Jazz Night</p>
+                      <p className="text-gray-400 text-xs">1 day ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3 p-2 bg-gray-700/30 rounded-lg border border-gray-600">
+                    <div className="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center border border-purple-500/30">
+                      <span className="text-purple-400 text-xs">🎉</span>
+                    </div>
+                    <div>
+                      <p className="text-white text-xs">Spring Festival completed</p>
+                      <p className="text-gray-400 text-xs">3 days ago</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

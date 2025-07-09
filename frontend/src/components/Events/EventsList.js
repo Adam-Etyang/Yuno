@@ -67,13 +67,13 @@ const EventsList = () => {
   const getCategoryColor = (category) => {
     switch (category) {
       case 'academic':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'social':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       case 'sports':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   };
 
@@ -85,16 +85,16 @@ const EventsList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Campus Events</h1>
-          <p className="text-gray-600">Discover and join amazing events happening on campus</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Campus Events</h1>
+          <p className="text-gray-400">Discover and join amazing events happening on campus</p>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+        <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700 p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             {/* Search */}
             <div className="relative flex-1">
@@ -103,7 +103,7 @@ const EventsList = () => {
                 placeholder="Search events, locations, or clubs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-green-500 focus:ring-green-500"
               />
             </div>
 
@@ -111,7 +111,7 @@ const EventsList = () => {
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Filters
@@ -120,19 +120,19 @@ const EventsList = () => {
 
           {/* Filters */}
           {showFilters && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-gray-700">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Category
                   </label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white focus:border-green-500 focus:ring-green-500">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
                       {categories.map(category => (
-                        <SelectItem key={category} value={category}>
+                        <SelectItem key={category} value={category} className="hover:bg-gray-700">
                           {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
                         </SelectItem>
                       ))}
@@ -141,16 +141,16 @@ const EventsList = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Club/Organization
                   </label>
                   <Select value={selectedClub} onValueChange={setSelectedClub}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white focus:border-green-500 focus:ring-green-500">
                       <SelectValue placeholder="All Clubs" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
                       {clubs.map(club => (
-                        <SelectItem key={club} value={club}>
+                        <SelectItem key={club} value={club} className="hover:bg-gray-700">
                           {club === 'all' ? 'All Clubs' : club}
                         </SelectItem>
                       ))}
@@ -159,27 +159,32 @@ const EventsList = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Price
                   </label>
                   <Select value={priceFilter} onValueChange={setPriceFilter}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white focus:border-green-500 focus:ring-green-500">
                       <SelectValue placeholder="All Prices" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Prices</SelectItem>
-                      <SelectItem value="free">Free Events</SelectItem>
-                      <SelectItem value="paid">Paid Events</SelectItem>
+                    <SelectContent className="bg-gray-800 border-gray-700 text-white">
+                      <SelectItem value="all" className="hover:bg-gray-700">All Prices</SelectItem>
+                      <SelectItem value="free" className="hover:bg-gray-700">Free Events</SelectItem>
+                      <SelectItem value="paid" className="hover:bg-gray-700">Paid Events</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="mt-4 flex gap-2">
-                <Button variant="outline" onClick={clearFilters} size="sm">
+                <Button 
+                  variant="outline" 
+                  onClick={clearFilters} 
+                  size="sm"
+                  className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+                >
                   Clear Filters
                 </Button>
-                <span className="text-sm text-gray-500 py-2">
+                <span className="text-sm text-gray-400 py-2">
                   {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''} found
                 </span>
               </div>
@@ -190,45 +195,45 @@ const EventsList = () => {
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => (
-            <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+            <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-green-500/50 hover:shadow-green-500/20 group">
               <div className="relative h-48" onClick={() => navigate(`/events/${event.id}`)}>
                 <img
                   src={event.image}
                   alt={event.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 left-4">
-                  <Badge className={getCategoryColor(event.category)}>
+                  <Badge className={`${getCategoryColor(event.category)} border`}>
                     {event.category}
                   </Badge>
                 </div>
                 <div className="absolute top-4 right-4">
-                  <div className="bg-white rounded-lg p-2 text-center shadow-sm">
-                    <div className="text-sm font-bold text-gray-900">
+                  <div className="bg-black/80 backdrop-blur-sm rounded-lg p-2 text-center shadow-lg">
+                    <div className="text-sm font-bold text-white">
                       {formatDate(event.date).split(' ')[1]}
                     </div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs text-gray-300">
                       {formatDate(event.date).split(' ')[0]}
                     </div>
                   </div>
                 </div>
               </div>
-              <CardHeader>
-                <CardTitle className="text-lg">{event.title}</CardTitle>
-                <p className="text-sm text-gray-600 line-clamp-2">{event.description}</p>
+              <CardHeader className="bg-gray-800/30">
+                <CardTitle className="text-lg text-white group-hover:text-green-400 transition-colors duration-300">{event.title}</CardTitle>
+                <p className="text-sm text-gray-400 line-clamp-2">{event.description}</p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="bg-gray-800/20">
                 <div className="space-y-2">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="w-4 h-4 mr-2" />
+                  <div className="flex items-center text-sm text-gray-300">
+                    <Calendar className="w-4 h-4 mr-2 text-green-400" />
                     {formatDate(event.date)} at {event.time}
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
+                  <div className="flex items-center text-sm text-gray-300">
+                    <MapPin className="w-4 h-4 mr-2 text-green-400" />
                     {event.location}
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Users className="w-4 h-4 mr-2" />
+                  <div className="flex items-center text-sm text-gray-300">
+                    <Users className="w-4 h-4 mr-2 text-green-400" />
                     {event.currentAttendees} / {event.maxAttendees} attendees
                   </div>
                   <div className="text-xs text-gray-500">
@@ -236,12 +241,12 @@ const EventsList = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-4">
-                  <span className="text-lg font-bold text-blue-600">
-                    {event.price === 0 ? 'Free' : `$${event.price}`}
+                  <span className="text-lg font-bold text-green-400">
+                    {event.price === 0 ? 'Free' : `KES ${event.price}`}
                   </span>
                   <Button
                     onClick={() => navigate(`/events/${event.id}`)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300"
                   >
                     View Details
                   </Button>
@@ -254,14 +259,18 @@ const EventsList = () => {
         {/* No Results */}
         {filteredEvents.length === 0 && (
           <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-24 h-24 bg-gray-800/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-700">
               <Search className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-            <p className="text-gray-600 mb-4">
+            <h3 className="text-lg font-medium text-white mb-2">No events found</h3>
+            <p className="text-gray-400 mb-4">
               Try adjusting your search or filter criteria
             </p>
-            <Button variant="outline" onClick={clearFilters}>
+            <Button 
+              variant="outline" 
+              onClick={clearFilters}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-green-400 hover:border-green-500 transition-all duration-300"
+            >
               Clear Filters
             </Button>
           </div>
