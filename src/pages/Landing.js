@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -19,6 +19,9 @@ const Landing = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   const typewriterWords = ['Smart booking', 'Event management', 'Campus experiences', 'Seamless planning'];
+  
+  const typewriterRef = useRef(null);
+  const tickerRef = useRef(null);
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -88,6 +91,77 @@ const Landing = () => {
       image: '/src/assets/images/food-fest.webp'
     }
   ];
+
+  // Typewriter animation
+  useEffect(() => {
+    const typewriter = typewriterRef.current;
+    if (!typewriter) return;
+    const words = [
+      'Intelligent reservations',
+      'seamless planning',
+      'effortless scheduling'
+    ];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let timeout;
+
+    function type() {
+      const currentWord = words[wordIndex];
+      const currentText = currentWord.substring(0, charIndex);
+      typewriter.textContent = currentText;
+      if (!isDeleting) {
+        if (charIndex < currentWord.length) {
+          charIndex++;
+          timeout = setTimeout(type, 100);
+        } else {
+          isDeleting = true;
+          timeout = setTimeout(type, 2000);
+        }
+      } else {
+        if (charIndex > 0) {
+          charIndex--;
+          timeout = setTimeout(type, 50);
+        } else {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          timeout = setTimeout(type, 500);
+        }
+      }
+    }
+    type();
+    return () => clearTimeout(timeout);
+  }, []);
+
+  // Ticker animation
+  useEffect(() => {
+    const ticker = tickerRef.current;
+    if (!ticker) return;
+    const tickerParent = ticker.parentElement;
+    let isPaused = false;
+    let speed = 1;
+    const originalContent = ticker.innerHTML;
+    ticker.innerHTML = originalContent + originalContent + originalContent;
+    let x = 0;
+    const oneSetWidth = ticker.scrollWidth / 3;
+    function animate() {
+      if (!isPaused) {
+        x -= speed;
+        if (Math.abs(x) >= oneSetWidth) {
+          x = 0;
+        }
+        ticker.style.transform = `translateX(${x}px)`;
+      }
+      requestAnimationFrame(animate);
+    }
+    tickerParent.addEventListener('mouseenter', () => { isPaused = true; });
+    tickerParent.addEventListener('mouseleave', () => { isPaused = false; });
+    animate();
+    return () => {
+      tickerParent.removeEventListener('mouseenter', () => { isPaused = true; });
+      tickerParent.removeEventListener('mouseleave', () => { isPaused = false; });
+    };
+  }, []);
 
   return (
     <Box sx={{ minHeight: '100vh', background: '#0a0a0a' }}>
@@ -432,6 +506,18 @@ const Landing = () => {
           </Box>
         </Container>
       </Box>
+
+      {/* Ticker Section */}
+      <section className="ticker-section">
+        <div className="ticker-container">
+          <h2 className="ticker-title">Partner Universities</h2>
+          <div className="ticker-wrapper">
+            <div className="ticker-content" id="ticker" ref={tickerRef}>
+              {/* Ticker content will be populated here */}
+            </div>
+          </div>
+        </div>
+      </section>
     </Box>
   );
 };

@@ -26,6 +26,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [emailClass, setEmailClass] = useState('');
+  const [passwordClass, setPasswordClass] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -34,23 +38,48 @@ const Login = () => {
     });
   };
 
+  const validate = () => {
+    let valid = true;
+    // Email validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      setEmailClass('error');
+      setEmailError('Please enter a valid email address');
+      valid = false;
+    } else {
+      setEmailClass('');
+      setEmailError('');
+    }
+    // Password validation
+    if (formData.password.trim().length < 8) {
+      setPasswordClass('error');
+      setPasswordError('Password must be at least 8 characters long');
+      valid = false;
+    } else {
+      setPasswordClass('');
+      setPasswordError('');
+    }
+    return valid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    try {
-      const result = await login(formData.email, formData.password);
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.error);
+    if (validate()) {
+      try {
+        const result = await login(formData.email, formData.password);
+        if (result.success) {
+          navigate('/dashboard');
+        } else {
+          setError(result.error);
+        }
+      } catch (err) {
+        setError('An error occurred during login');
       }
-    } catch (err) {
-      setError('An error occurred during login');
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -104,6 +133,7 @@ const Login = () => {
               autoFocus
               value={formData.email}
               onChange={handleChange}
+              className={emailClass}
             />
 
             <TextField
@@ -117,7 +147,11 @@ const Login = () => {
               autoComplete="current-password"
               value={formData.password}
               onChange={handleChange}
+              className={passwordClass}
             />
+
+            <div className={`error-message${emailError ? ' show' : ''}`} id="loginEmailError">{emailError}</div>
+            <div className={`error-message${passwordError ? ' show' : ''}`} id="loginPasswordError">{passwordError}</div>
 
             <Button
               type="submit"
